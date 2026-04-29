@@ -1,0 +1,9 @@
+{
+  "name": "morpheus-voice-b",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "process.js",
+  "scripts": {
+    "start": "node --env-file=.env process.js"
+  }
+}

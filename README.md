@@ -2,7 +2,7 @@
 
 用 macOS Dictation 口述文字，按一個快捷鍵，AI 自動整理、翻譯、改寫，貼回原位。
 
-用來取代 Typeless（$144/年）。成本：BetterTouchTool 買斷 $10 + OpenAI API 每次約 $0.01。
+用來取代 Typeless（$144/年）。成本：BetterTouchTool 買斷 $10 + OpenAI API 每次約 $0.01。（可以先使用試用版 45 天，確認習慣這個工具後再決定是否要買斷）
 
 ---
 

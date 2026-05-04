@@ -43,12 +43,37 @@ Rules:
 - 不要解釋你做了什麼，只輸出條列內容`,
 };
 
-const mode = process.argv[2] || 'voice';
-const systemPrompt = PROMPTS[mode];
+const HUMOR_LEVELS = [
+  '完全正式，不帶任何幽默，語氣嚴肅專業',
+  '非常正式，偶爾有一點人味，但仍以專業為主',
+  '專業但自然，語氣稍微輕鬆，不刻意幽默',
+  '輕鬆對話感，偶爾加入輕幽默但不搶戲',
+  '有個性，偶爾用比喻或誇張讓文字活起來',
+  '明顯有幽默感，自嘲或誇張讓文字更有趣',
+  '幽默是主要特色，洞察包在笑點裡',
+  '大量幽默，毒舌或自嘲口吻',
+  '幾乎全是幽默，偶爾才有正式資訊',
+  '100% 幽默，全力幹話，讓人捧腹大笑為最高優先',
+];
 
-if (!systemPrompt) {
-  process.stderr.write(`❌ 未知 mode：${mode}，可用：voice / en / zh / bullet\n`);
-  process.exit(1);
+const mode = process.argv[2] || 'voice';
+const humorMatch = mode.match(/^humor([0-9])$/);
+
+let systemPrompt;
+if (humorMatch) {
+  const level = parseInt(humorMatch[1]);
+  systemPrompt = `你是一個文字改寫助理。請將輸入的文字改寫，幽默程度調整為 ${level}/9（${HUMOR_LEVELS[level]}）。
+
+規則：
+- 使用繁體中文
+- 保留原本的核心意思與資訊
+- 不要解釋你做了什麼，只輸出改寫後的文字`;
+} else {
+  systemPrompt = PROMPTS[mode];
+  if (!systemPrompt) {
+    process.stderr.write(`❌ 未知 mode：${mode}，可用：voice / en / zh / bullet / humor0–9\n`);
+    process.exit(1);
+  }
 }
 
 const apiKey = process.env.OPENAI_API_KEY;

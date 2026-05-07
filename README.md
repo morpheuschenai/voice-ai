@@ -24,9 +24,7 @@
 
 - macOS
 - Node.js 20.6+（建議用 [nvm](https://github.com/nvm-sh/nvm) 安裝）
-- 觸發工具（擇一）：
-  - **[Hammerspoon](https://www.hammerspoon.org/)**（免費開源，推薦）
-  - **[BetterTouchTool](https://folivora.ai/)**（買斷 $10，GUI 設定較直覺）
+- [Hammerspoon](https://www.hammerspoon.org/)（免費，推薦）或 [BetterTouchTool](https://folivora.ai/)（$10）
 - OpenAI API key（[前往申請](https://platform.openai.com/api-keys)）
 
 ---
@@ -58,11 +56,13 @@ OPENAI_API_KEY=sk-proj-你的金鑰
 which node
 ```
 
-記下這個路徑，等等設定觸發工具時會用到（例如 `/Users/你的帳號/.nvm/versions/node/v24.13.1/bin/node`）。
+記下這個路徑，等等設定 Hammerspoon 時會用到。
 
 ---
 
-## 方案一：Hammerspoon（免費）
+## 觸發工具設定
+
+### Hammerspoon（推薦，免費）
 
 **安裝**
 
@@ -72,42 +72,24 @@ brew install --cask hammerspoon
 
 **設定**
 
-把以下內容存成 `~/.hammerspoon/init.lua`，路徑替換成你自己的：
+1. 複製 `hammerspoon/init.lua`（本 repo 內附）到 `~/.hammerspoon/init.lua`
+2. 用文字編輯器打開，把三個路徑換成你自己的：
 
 ```lua
 local NODE   = '/Users/你的帳號/.nvm/versions/node/v24.13.1/bin/node'
 local ENV    = '/Users/你的帳號/voice-ai/.env'
 local SCRIPT = '/Users/你的帳號/voice-ai/process.js'
-
-local function runVoiceAI(mode)
-  hs.eventtap.keyStroke({'cmd'}, 'c')
-  hs.notify.new({title = 'voice-ai', informativeText = '⏳ 處理中...'}):send()
-  hs.timer.doAfter(1.5, function()
-    hs.task.new(NODE, function()
-      hs.eventtap.keyStroke({'cmd'}, 'v')
-      hs.notify.new({title = 'voice-ai', informativeText = '✅ 完成'}):send()
-    end, {'--env-file=' .. ENV, SCRIPT, mode}):start()
-  end)
-end
-
-hs.hotkey.bind({'cmd', 'ctrl'}, 'V', function() runVoiceAI('voice')  end)
-hs.hotkey.bind({'cmd', 'ctrl'}, 'E', function() runVoiceAI('en')     end)
-hs.hotkey.bind({'cmd', 'ctrl'}, 'Z', function() runVoiceAI('zh')     end)
-hs.hotkey.bind({'cmd', 'ctrl'}, 'B', function() runVoiceAI('bullet') end)
-
-for i = 0, 9 do
-  local level = i
-  hs.hotkey.bind({'cmd', 'ctrl'}, tostring(level), function()
-    runVoiceAI('humor' .. level)
-  end)
-end
 ```
 
-開啟 Hammerspoon → 給 Accessibility 權限 → 點 menu bar 圖示 → **Reload Config**。
+3. 開啟 Hammerspoon
+4. 系統設定 → 隱私權與安全性 → 輔助使用 → 開啟 Hammerspoon
+5. 點 menu bar 錘子圖示 → **Reload Config**
+
+完成後按 ⌘⌃V 測試，右上角會出現「⏳ 處理中...」通知。
 
 ---
 
-## 方案二：BetterTouchTool（$10）
+### BetterTouchTool（備選，$10 買斷）
 
 每個快捷鍵的動作序列：
 
@@ -152,7 +134,7 @@ const PROMPTS = {
 };
 ```
 
-然後在觸發工具新增對應快捷鍵，mode 名稱換成新的 key。
+在 Hammerspoon 新增對應的 `hs.hotkey.bind`，mode 換成新的 key。
 
 ---
 
@@ -161,7 +143,7 @@ const PROMPTS = {
 | 項目 | 費用 |
 |------|------|
 | Hammerspoon | 免費 |
-| BetterTouchTool | $10（一次買斷） |
+| BetterTouchTool | $10（一次買斷，可試用 45 天） |
 | OpenAI API | ~$0.01 / 次 |
 | Typeless 訂閱 | $144 / 年 |
 
